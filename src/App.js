@@ -119,7 +119,7 @@ const withDagobah = PlanetViewComponent =>
     state = { loading: true };
 
     componentDidMount() {
-      fetch("https://swapi.co/api/planets/5")
+      fetch('https://swapi.co/api/planets/5')
         .then(res => res.json())
         .then(
           planet => this.setState({ loading: false, planet }),
