@@ -3,10 +3,18 @@ import React, { Component } from 'react';
 class App extends Component {
   render() {
     const Dagobah = withDagobah(PlanetBranch);
+    const Planet = withPlanet(PlanetBranch, 1);
+    const Planet2 = withPlanet(PlanetBranch, 3);
+    const PlanetList = withPlanetList(PlanetListView);
     return (
       <section>
         <h1>HOC!</h1>
         <Dagobah />
+        <h2>Planet Component based ID</h2>
+        <Planet />
+        <Planet2 />
+        <h2>Planet List</h2>
+        <PlanetList />
       </section>
     );
   }
@@ -123,14 +131,72 @@ const withDagobah = PlanetViewComponent =>
         .then(res => res.json())
         .then(
           planet => this.setState({ loading: false, planet }),
-          error => this.setState({ loading: false, error })
+          error => this.setState({ loading: false, error }),
         );
     }
 
     render() {
       return <PlanetViewComponent {...this.state} />;
     }
-  }
+  };
 
+
+const withPlanet = (PlanetViewComponent, id) =>
+  class extends Component {
+    state = { loading: true };
+
+    componentDidMount() {
+      fetch(`https://swapi.co/api/planets/${id}`)
+        .then(res => res.json())
+        .then(
+          planet => this.setState({ loading: false, planet }),
+          error => this.setState({ loading: false, error }),
+        );
+    }
+
+    render() {
+      return <PlanetViewComponent {...this.state} />
+    }
+  };
+
+const withPlanetList = PlanetListViewComponent =>
+  class extends Component {
+    state = { count: 0 };
+
+    componentDidMount() {
+      fetch('https://swapi.co/api/planets')
+        .then(res => res.json())
+        .then(
+          planets => this.setState({ count: planets.count }),
+          error => this.setState({ count: -1, error }),
+        );
+    }
+
+    render() {
+      console.log(this.state.count);
+      return <PlanetListViewComponent {...this.state} />
+    }
+  };
+
+const PlanetListView = ({ count }) => {
+  console.log(`Planet List View Component: count -> ${count}`);
+  const planetList = [];
+  if (count > 0) {
+    for (let id = 1; id <= count; id += 1) {
+      const planet = withPlanet(PlanetBranch, id);
+      console.log(planet);
+      planetList.push(planet);
+    }
+    console.log(planetList);
+    const MyPlanet = planetList[1];
+    return (
+      <div>
+        <MyPlanet />
+      </div>
+    );
+  } else {
+    return <ErrorView />;
+  }
+};
 
 export default App;
