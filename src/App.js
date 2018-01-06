@@ -183,20 +183,25 @@ const PlanetListView = ({ count }) => {
   const planetList = [];
   if (count > 0) {
     for (let id = 1; id <= count; id += 1) {
-      const planet = withPlanet(PlanetBranch, id);
-      console.log(planet);
-      planetList.push(planet);
+      const Planet = withPlanet(PlanetBranch, id);
+      console.log(Planet);
+      planetList.push(Planet);
     }
     console.log(planetList);
     const MyPlanet = planetList[1];
     return (
       <div>
         <MyPlanet />
+        {planetList}
       </div>
     );
   } else {
     return <ErrorView />;
   }
 };
+
+//---------------------------------------------------------------------------//
+
+
 
 export default App;
